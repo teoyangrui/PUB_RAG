@@ -145,7 +145,8 @@ def chroma_add_segments(segments: List[Dict]):
 
 def chroma_query(query: str, top_k: int = 8) -> List[Dict]:
     _, coll, _ = get_temp_chroma()
-    # IMPORTANT: supply query_embeddings (not query_texts) since we didn't attach an embedding fn to the collection
+    # Supply query_embeddings (not query_texts) since we didn't attach an embedding fn to the collection
+    
     q_emb = get_embedder().encode([query], normalize_embeddings=True).tolist()
     results = coll.query(query_embeddings=q_emb, n_results=top_k)
     outs: List[Dict] = []
@@ -183,5 +184,5 @@ def ask_with_temp_context(question: str, excerpts: List[Dict], strict: bool = Tr
         Answer concisely with brief citations like [source p.page] where applicable.
         '''
     )
-    # Call into LLM.ask, indicating temp_context=Trueh
+    # Call into LLM.ask, indicating temp_context=True
     return llm.ask(prompt, temp_context=True) 
