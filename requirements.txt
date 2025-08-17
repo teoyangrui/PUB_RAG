@@ -188,6 +188,7 @@ python-dotenv==1.1.1
 python-iso639==2025.2.18
 python-magic==0.4.27
 python-oxmsg==0.0.2
+pysqlite3-binary==0.5.2.post3
 pytz==2025.2
 pyxnat==1.6.3
 PyYAML==6.0.2
