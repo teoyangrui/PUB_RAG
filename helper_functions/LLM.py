@@ -2,7 +2,7 @@ import os
 import re
 import json
 from pathlib import Path
-
+import streamlit as st
 from dotenv import load_dotenv
 from langchain.schema import Document
 from langchain_community.vectorstores import Chroma
@@ -16,8 +16,9 @@ from typing import Optional, List
 from langchain.callbacks.manager import CallbackManagerForRetrieverRun
 from langchain.prompts import PromptTemplate
 
-load_dotenv(Path(__file__).resolve().parent / ".env")
-API_KEY = os.getenv("OPENAI_API_KEY")
+# load_dotenv(Path(__file__).resolve().parent / ".env")
+# API_KEY = os.getenv("OPENAI_API_KEY")
+API_KEY = st.secrets.get("OPENAI_API_KEY")
 with open("./helper_functions/label_map.json", "r", encoding="utf-8") as f:
     global_label_map = json.load(f)
 
@@ -107,7 +108,9 @@ RAG_INSTRUCTIONS = (
     '''
     Use ONLY the context below to answer.
     If the answer is not present in the context, reply exactly: 'Not found in the uploaded documents.' 
-    When you cite, use the format [source: document_name p.page].
+    When you cite, use the format 
+    
+    [reference: p.page]
     '''
 )
 
@@ -136,7 +139,26 @@ qa_chain = RetrievalQA.from_chain_type(
     retriever=retriever, 
     return_source_documents=True,
     chain_type_kwargs = {"prompt": RAG_PROMPT})
-
+#get citation
+def _format_citations(source_docs, max_refs=5) -> str:
+    seen = set()
+    out = []
+    for d in source_docs:
+        name = d.metadata.get("source")
+        page = d.metadata.get("page")
+        if not name:
+            continue
+        key = (name, page)
+        if key in seen:
+            continue
+        seen.add(key)
+        if page is not None:
+            out.append(f"[source: {name} p.{int(page)}]")
+        else:
+            out.append(f"[source: {name}]")
+        if len(out) >= max_refs:
+            break
+    return " ".join(out)
 #Ask Function
 def ask(query, temp_context=False):
     #using persistant vectorDB
@@ -144,6 +166,9 @@ def ask(query, temp_context=False):
 
         result = qa_chain({"query": query})
         answer = result["result"]
+        citations = _format_citations(result.get("source_documents", []))
+        if citations:
+            answer = f"{answer}{citations}"
     elif temp_context: #only when using temp context. 
         # temp_context=True, use OpenAI directly.
         # Expect `query` to already contain any context block you assembled upstream (e.g., "Context excerpts: ...").

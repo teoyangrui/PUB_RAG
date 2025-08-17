@@ -101,6 +101,35 @@ with st.sidebar:
 
 #main page for user to ask questions
 st.title("Streamlit App")
+st.markdown('''
+Example Questions to test:
+1. What is the recommended cleaning procedures for a standard circular grease trap according to PUB?
+
+2. What is the required minimum setback for a ≤600 mm sewer laid at >5 m depth, and how is the setback measured relative to structures? 
+ 
+
+3. State the Public Sewer Corridor distances (X) on either side of the centreline for DTSS tunnels, sewers ≥900 mm, and sewers <900 mm. 
+
+4. For a mixed development/commercial building, how must the drain-line connection to the public sewer be made, and in what cases is a ‘Y’-junction permitted? 
+
+5. What are the minimum sewer size and the design/allowable peak-flow velocities (target, minimum, maximum) for newly constructed sewers? 
+ 
+
+6. Before commissioning, what testing/inspection must be completed for new sewers/manholes/pumping mains/chambers, and is this repeated before the end of the DLP? 
+
+7. For pumped drainage systems, what are the minimum standby pumping configurations required for General Developments vs other development types? (Answer in N + … form.) 
+
+8. Define freeboard and state the general freeboard requirement as a percentage of drain depth at design flow. 
+
+9. Upon TOP, who must make annual declarations for developments with flood protection measures, and what systems/measures do these declarations cover? 
+ 
+
+10. For construction/earthwork sites, what water-quality limit must discharges meet under the regulations, and to what storm return period must ECM be designed? 
+ 
+
+11. When an at-grade structure is built over a drain/drainage reserve, what maintenance openings and lay-bys must be provided to ensure access? (Give dimensions/arrangement.          
+
+''')
 form = st.form(key="form")
 form.subheader("Prompt")
 user_prompt = form.text_area("Enter your prompt here", height=200)
