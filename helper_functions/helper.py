@@ -1,3 +1,10 @@
+# Ensure modern SQLite (>=3.35) on Streamlit Cloud
+try:
+    import pysqlite3  # provides a newer SQLite
+    import sys
+    sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
+except Exception:
+    pass
 import os, io, shutil, tempfile
 from typing import List, Dict, Tuple
 
